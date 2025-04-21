@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spaceship Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Spaceship Game</h1>
+        <img src="C:\Users\WIN10\Documents\שנה ג\סמסטר ב\סביבות פיתוח באינטרנט\assignment2_319066585\assignment2-319066585_208613323_assignment2\image1.png" alt="Site Logo" height="50">
+    </header>
+
+    <nav>
+        <botton onclick="showScreen('welcome')">Home</botton>
+        <button onclick="showScreen('login')">Login</button>
+        <button onclick="showScreen('register')">Register</button>
+        <button onclick="openAbout()">About</button>
+    </nav>
+
+    <main>
+        <div id="welcome" class="screen">
+            <h2>Welcome</h2>
+            <p>Name: [Your Name] | ID: [Your ID]</p>
+            <a herf="https://wed-2023.github.io/assignment2-319066585_208613323_assignment2/" target="_blank">My Portfolio</a>
+            <br>
+            <button onclick="showScreen('login')">Login</button>
+            <button onclick="showScreen('register')">Register</button>
+        </div>
+
+        <div id="login" class="screen" style="display: none;">
+            <h2>Login</h2>
+            <form action="loginForm" onsubmit="return validateLoginForm()">
+                <label>Username: <input type="text" id="loginUsername" required></label><br>
+                <label>Password: <input type="password" id="loginPass" required></label><br>
+                <button type="submit">Submit</button>
+            </form>
+            <div id="loginError" style="color: red;"></div>
+        </div>
+
+        <div id="register" class="screen" style="display: none;">
+            <h2>Register</h2>
+            <form action="regForm" onsubmit="return validateRegForm()">
+                <label>Username: <input type="text" id="regUsername" required></label><br>
+                <label>Password: <input type="password" id="regPass" required></label><br>
+                <label>Confirm Password: <input type="password" id="regPassCon" required></label><br>
+                <label>First Name: <input type="text" id="regFirstName" required></label><br>
+                <label>Last Name: <input type="text" id="regLastName" required></label><br>
+                <label>Email: <input type="email" id="regEmail" required></label><br>
+                <label>Date Of Birth:
+                    <select id="birthDay"></select>
+                    <select id="birthMonth"></select>
+                    <select id="birthYear"></select>
+                </label><br>
+                <button type="submit">Submit</button>
+            </form>
+            <div id="regError" style="color: red;"></div>
+        </div>
+
+        <div>
+
+        </div>
+    </main>
+</body>
