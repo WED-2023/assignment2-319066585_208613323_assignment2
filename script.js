@@ -151,7 +151,7 @@ function createEnemies() {
         width: 40,
         height: 20,
         alive: true,
-        row: row // לשם ניקוד
+        row: row
       });
     }
   }
@@ -193,6 +193,7 @@ function drawEnemies() {
 
 
 function startGame() {
+<<<<<<< HEAD
   shootKey = document.getElementById("shootKey").value.trim() || ' ';
   gameDuration = parseInt(document.getElementById("gameTime").value) * 60;
   shipColor = document.getElementById("shipColor").value;
@@ -212,7 +213,31 @@ function startGame() {
   backgroundMusic.currentTime = 0;
   backgroundMusic.play();
   gameLoop();
+=======
+    shootKey = document.getElementById("shootKey").value.trim() || ' ';
+    gameDuration = parseInt(document.getElementById("gameTime").value) * 60;
+    shipColor = document.getElementById("shipColor").value;
+    enemyColor = document.getElementById("enemyColor").value;
+  
+    if (gameDuration < 120) {
+      alert("Minimum duration is 2 minutes.");
+      return;
+    }
+  
+    timeElapsed = 0;
+    timeLeft = gameDuration;
+    score = 0;
+    lives = 3;
+    playerBullets = [];
+    enemyBullets = [];
+  
+    showScreen("game");
+    createEnemies();
+    startTimer();
+    gameLoop();
+>>>>>>> ca9c4b8e18e3390cd97a3bd70e74825bf03411a6
 }
+  
 
 
 function startTimer() {
@@ -226,6 +251,7 @@ function startTimer() {
 }
 
 
+<<<<<<< HEAD
 function endTime() {
   backgroundMusic.pause();
   backgroundMusic.currentTime = 0;
@@ -241,6 +267,8 @@ function endTime() {
 
 
 
+=======
+>>>>>>> ca9c4b8e18e3390cd97a3bd70e74825bf03411a6
 function gameLoop() {
   clearCanvas();
   updatePlayer();
@@ -256,21 +284,19 @@ function gameLoop() {
   drawInformation();
 
   if (lives <= 0) {
-    showHistory();
     alert("You Lost!");
-    showScreen("welcome"); //להוסיף מסך של טבלת השיאים האישית של השחקן וכפתור למשחק חדש
+    endGame();
     return;
   }
   if (timeLeft <= 0) {
-    showHistory();
     clearInterval(timerInterval);
     endTime();
+    endGame();
     return;
   }
   if (enemies.every(enemy => !enemy.alive)) {
-    showHistory();
     alert("You won! Score: " + score);
-    showScreen("welcome"); //להוסיף מסך של טבלת השיאים האישית של השחקן וכפתור למשחק חדש
+    endGame();
     return;
   }
   requestAnimationFrame(gameLoop);
@@ -392,24 +418,36 @@ function drawEnemyBullets() {
 }
 
 
-function showHistory() {
-  history.push(score);
-  history.sort((a, b) => b - a);
-  var html = "<h3>Your Scores:</h3><ol>";
-  history.forEach((s, i) => {
-    html += `<li>${s}${s === score ? " ← last game" : ""}</li>`;
-  });
-  html += "</ol>";
-  var resultDiv = document.createElement("div");
-  resultDiv.innerHTML = html;
-  resultDiv.style.background = "#222";
-  resultDiv.style.color = "#fff";
-  resultDiv.style.padding = "20px";
-  resultDiv.style.marginTop = "20px";
-  resultDiv.style.border = "2px solid #ccc";
-  resultDiv.style.textAlign = "left";
-  document.body.appendChild(resultDiv);
+function endTime() {
+    let message;
+    if (score < 100) {
+      message = "You can do better. Score: " + score;
+    } else {
+      message = "Winner! Score: " + score;
+    }
 }
+
+
+function endGame() {
+    history.push(score);
+    history.sort((a, b) => b - a);
+    displayScoreTable();
+    showScreen("scoreTable");
+}
+
+
+function displayScoreTable() {
+    const container = document.getElementById("scoreTable");
+    container.innerHTML = "<h2>Your Score:</h2>";
+    let table = "<table border='1'><tr><th>Date</th><th>Score</th></tr>";
+    scoreHistory.forEach(entry => {
+      table += `<tr><td>${entry.date}</td><td>${entry.score}</td></tr>`;
+    });
+    table += "</table>";
+    container.innerHTML += table;
+    container.style.display = "block";
+  }
+  
 
 
 

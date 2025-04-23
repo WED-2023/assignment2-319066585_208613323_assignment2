@@ -1,139 +1,110 @@
-/* כללי */
+/* רקע חלל ונראות כללית */
 body {
     margin: 0;
-    padding: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #000;
-    color: #fff;
-    min-width: 1366px;
-    min-height: 768px;
-}
-
-/* כותרת */
-header {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-image: url('https://images.unsplash.com/photo-1470290378698-263fa7ca0f44?auto=format&fit=crop&w=1500&q=80');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #ffffff;
+  }
+  
+  header, nav, main, footer {
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    margin: 10px;
+    border-radius: 12px;
+  }
+  
+  h1, h2 {
+    text-align: center;
+    color: #00ffff;
+  }
+  
+  .screen {
+    display: none;
+  }
+  
+  /* כפתורים מודרניים */
+  button {
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 5px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #00c6ff;
+  }
+  
+  input, select {
+    padding: 5px;
+    border-radius: 6px;
+    border: none;
+    margin: 5px 0;
+  }
+  
+  form label {
+    display: block;
+    margin: 10px 0;
+  }
+  
+  /* טבלת ניקוד */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+  
+  th, td {
+    border: 1px solid #fff;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  th {
+    background-color: #0072ff;
+    color: white;
+  }
+  
+  /* מודאל */
+  .modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 10px 40px;
-    background-color: #111;
-    border-bottom: 2px solid #444;
-}
-
-header h1 {
-    margin: 0;
-    font-size: 28px;
-}
-
-/* תפריט */
-nav {
-    display: flex;
     justify-content: center;
-    gap: 15px;
-    padding: 10px;
-    background-color: #222;
-    border-bottom: 1px solid #444;
-}
-
-nav button {
-    background-color: #00ccff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-nav button:hover {
-    background-color: #0099cc;
-}
-
-/* אזור תוכן */
-main {
-    padding: 30px;
-    text-align: center;
-}
-
-.screen {
-    display: none;
-}
-
-.screen h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-input, select {
-    padding: 8px;
-    margin: 5px 0;
-    font-size: 16px;
-    width: 220px;
-}
-
-/* שגיאות */
-#error, #registerError, #loginError, #regError {
-    color: red;
-    margin-top: 10px;
-}
-
-/* כפתורים */
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    margin-top: 10px;
-    cursor: pointer;
-    border: none;
-    border-radius: 4px;
-    background-color: #00cc99;
-    color: white;
-}
-
-button:hover {
-    background-color: #009977;
-}
-
-/* אזור המשחק */
-#gameCanvas {
-    display: block;
-    margin: 0 auto;
-    background-color: #111;
-    border: 2px solid #555;
-    box-shadow: 0 0 20px #0ff;
-}
-
-/* חלון מודאלי */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.6);
-}
-
-.modal-content {
-    background-color: #222;
-    margin: 10% auto;
+  }
+  
+  .modal-content {
+    background: #111;
     padding: 20px;
-    border: 2px solid #888;
-    width: 50%;
-    color: white;
-    position: relative;
     border-radius: 10px;
-}
-
-.close {
-    color: white;
-    position: absolute;
-    right: 15px;
-    top: 10px;
+    color: #fff;
+    width: 80%;
+    max-width: 500px;
+  }
+  
+  .close {
+    float: right;
     font-size: 24px;
     cursor: pointer;
-}
-
-.close:hover {
-    color: #f00;
-}
+    color: #f55;
+  }
+  
+  /* קנבס המשחק */
+  canvas {
+    display: block;
+    margin: 20px auto;
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #fff;
+    border-radius: 10px;
+  }
