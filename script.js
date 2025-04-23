@@ -30,6 +30,12 @@ var enemyShootSpeed = 5; // speed of enemy bullets
 var enemyBullets = [];
 var lives = 3;
 var lastEnemyShotTime = 0;
+var shootPlayerSound = new Audio("retro-laser-1-236669.mp3");
+var shootEnemySound = new Audio("laser-104024.mp3");
+var hitSound = new Audio("small-explosion-94980.mp3");
+var explosionSound = new Audio("explosion-312361.mp3");
+var backgroundMusic = new Audio("game-music-loop-4-144341.mp3");
+backgroundMusic.loop = true;
 
 
 
@@ -203,6 +209,8 @@ function startGame() {
 
   showScreen("game");
   createEnemies();
+  backgroundMusic.currentTime = 0;
+  backgroundMusic.play();
   gameLoop();
 }
 
@@ -219,6 +227,8 @@ function startTimer() {
 
 
 function endTime() {
+  backgroundMusic.pause();
+  backgroundMusic.currentTime = 0;
   let message;
   if (score < 100) {
     message = "You can do better. Score: " + score;
@@ -312,6 +322,8 @@ function checkCollisions() {
           bullet.y < enemy.y + enemy.height &&
           bullet.y + bullet.height > enemy.y) {
         enemy.alive = false;
+        hitSound.currentTime = 0;
+        hitSound.play();
         bullet.y = -100; 
         if (enemy.row === 0) {
           score += 20;
@@ -349,6 +361,8 @@ function enemyShoot() {
     width: 4,
     height: 10
   });
+  shootEnemySound.currentTime = 0;
+  shootEnemySound.play();
 }
 
 
@@ -359,6 +373,8 @@ function updateEnemyBullets() {
     bullet.y += 5;
     if (bullet.x < player.x + player.width && bullet.x + bullet.width > player.x && bullet.y < player.y + player.height && bullet.y + bullet.height > player.y) {
       lives--;
+      explosionSound.currentTime = 0;
+      explosionSound.play();
       bullet.y = canvas.height + 1;
       player.x = canvas.width / 2;
       player.y = canvas.height - 80;
@@ -419,7 +435,10 @@ function closeAbout() {
 window.addEventListener("keydown", e => {
   if (e.key === "Escape") closeAbout();
   keysPressed[e.key] = true;
+
   if (e.key === shootKey) {
+    shootPlayerSound.currentTime = 0;
+    shootPlayerSound.play();
     playerBullets.push({
       x: player.x + player.width / 2 - 2,
       y: player.y,
@@ -428,6 +447,7 @@ window.addEventListener("keydown", e => {
     });
   }
 });
+
 
 
 window.addEventListener("keyup", e => {
