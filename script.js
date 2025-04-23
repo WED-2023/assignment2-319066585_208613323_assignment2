@@ -30,6 +30,8 @@ var enemyShootSpeed = 5; // speed of enemy bullets
 var enemyBullets = [];
 var lives = 3;
 var lastEnemyShotTime = 0;
+var enemyBulletReadyToShoot = true;
+
 var shootPlayerSound = new Audio("retro-laser-1-236669.mp3");
 var shootEnemySound = new Audio("laser-104024.mp3");
 var hitSound = new Audio("small-explosion-94980.mp3");
@@ -193,27 +195,6 @@ function drawEnemies() {
 
 
 function startGame() {
-<<<<<<< HEAD
-  shootKey = document.getElementById("shootKey").value.trim() || ' ';
-  gameDuration = parseInt(document.getElementById("gameTime").value) * 60;
-  shipColor = document.getElementById("shipColor").value;
-  enemyColor = document.getElementById("enemyColor").value;
-  timeElapsed = 0;
-  timeLeft = gameDuration;
-  score = 0;
-  playerBullets = [];
-  startTimer();
-  if (gameDuration < 120) {
-    alert("Minimum duration is 2 minutes.");
-    return;
-  }
-
-  showScreen("game");
-  createEnemies();
-  backgroundMusic.currentTime = 0;
-  backgroundMusic.play();
-  gameLoop();
-=======
     shootKey = document.getElementById("shootKey").value.trim() || ' ';
     gameDuration = parseInt(document.getElementById("gameTime").value) * 60;
     shipColor = document.getElementById("shipColor").value;
@@ -233,9 +214,10 @@ function startGame() {
   
     showScreen("game");
     createEnemies();
+    backgroundMusic.currentTime = 0;
+    backgroundMusic.play();
     startTimer();
     gameLoop();
->>>>>>> ca9c4b8e18e3390cd97a3bd70e74825bf03411a6
 }
   
 
@@ -251,7 +233,6 @@ function startTimer() {
 }
 
 
-<<<<<<< HEAD
 function endTime() {
   backgroundMusic.pause();
   backgroundMusic.currentTime = 0;
@@ -266,9 +247,6 @@ function endTime() {
 }
 
 
-
-=======
->>>>>>> ca9c4b8e18e3390cd97a3bd70e74825bf03411a6
 function gameLoop() {
   clearCanvas();
   updatePlayer();
@@ -370,56 +348,49 @@ function checkCollisions() {
 
 
 function enemyShoot() {
-    if (enemyBullets.length > 0) {
-      const activeBullet = enemyBullets[0];
-      if (activeBullet.y < canvas.height * 0.75) return;
-    }
-<<<<<<< HEAD
-  }
-  var aliveEnemies = enemies.filter(enemy => enemy.alive);
-  if (aliveEnemies.length === 0) {
-    return;
-  }
-  var shooter = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
+  if (!enemyBulletReadyToShoot) return;
+
+  const aliveEnemies = enemies.filter(enemy => enemy.alive);
+  if (aliveEnemies.length === 0) return;
+
+  const shooter = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
+
   enemyBullets.push({
     x: shooter.x + shooter.width / 2 - 2,
     y: shooter.y + shooter.height,
     width: 4,
     height: 10
   });
+
+  enemyBulletReadyToShoot = false;
   shootEnemySound.currentTime = 0;
   shootEnemySound.play();
-=======
-    const aliveEnemies = enemies.filter(enemy => enemy.alive);
-    if (aliveEnemies.length === 0) return;
-    const shooter = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
-    enemyBullets = [{
-      x: shooter.x + shooter.width / 2 - 2,
-      y: shooter.y + shooter.height,
-      width: 4,
-      height: 10
-    }];
->>>>>>> 6041443152d60897c8943d080d9aa5f9bb7ddaa0
 }
-  
+
 
 
 function updateEnemyBullets() {
   enemyBullets = enemyBullets.filter(bullet => bullet.y < canvas.height);
 
   enemyBullets.forEach(bullet => {
-    bullet.y += 5;
-    if (bullet.x < player.x + player.width && bullet.x + bullet.width > player.x && bullet.y < player.y + player.height && bullet.y + bullet.height > player.y) {
+    bullet.y += enemyShootSpeed;
+
+    if (!enemyBulletReadyToShoot && bullet.y >= canvas.height * 0.75) {
+      enemyBulletReadyToShoot = true;
+    }
+
+    if (bullet.x < player.x + player.width &&
+        bullet.x + bullet.width > player.x &&
+        bullet.y < player.y + player.height &&
+        bullet.y + bullet.height > player.y) {
       lives--;
-      explosionSound.currentTime = 0;
-      explosionSound.play();
       bullet.y = canvas.height + 1;
       player.x = canvas.width / 2;
       player.y = canvas.height - 80;
-      // להוסיף אפקט או סאונד כאן
     }
   });
 }
+
 
 
 function drawEnemyBullets() {
