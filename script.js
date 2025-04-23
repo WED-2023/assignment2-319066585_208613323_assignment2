@@ -370,11 +370,11 @@ function checkCollisions() {
 
 
 function enemyShoot() {
-  if (enemyBullets.length > 0) {
-    var activeBullet = enemyBullets[0];
-    if (activeBullet.y < canvas.height * 0.75) {
-      return;
+    if (enemyBullets.length > 0) {
+      const activeBullet = enemyBullets[0];
+      if (activeBullet.y < canvas.height * 0.75) return;
     }
+<<<<<<< HEAD
   }
   var aliveEnemies = enemies.filter(enemy => enemy.alive);
   if (aliveEnemies.length === 0) {
@@ -389,7 +389,19 @@ function enemyShoot() {
   });
   shootEnemySound.currentTime = 0;
   shootEnemySound.play();
+=======
+    const aliveEnemies = enemies.filter(enemy => enemy.alive);
+    if (aliveEnemies.length === 0) return;
+    const shooter = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
+    enemyBullets = [{
+      x: shooter.x + shooter.width / 2 - 2,
+      y: shooter.y + shooter.height,
+      width: 4,
+      height: 10
+    }];
+>>>>>>> 6041443152d60897c8943d080d9aa5f9bb7ddaa0
 }
+  
 
 
 function updateEnemyBullets() {
