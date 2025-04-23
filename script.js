@@ -145,7 +145,7 @@ function createEnemies() {
         width: 40,
         height: 20,
         alive: true,
-        row: row // לשם ניקוד
+        row: row
       });
     }
   }
@@ -195,14 +195,13 @@ function startGame() {
   timeLeft = gameDuration;
   score = 0;
   playerBullets = [];
-  startTimer();
   if (gameDuration < 120) {
     alert("Minimum duration is 2 minutes.");
     return;
   }
-
   showScreen("game");
   createEnemies();
+  startTimer();
   gameLoop();
 }
 
