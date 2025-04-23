@@ -81,14 +81,14 @@ function showScreen(screenId) {
 }
 
 
-function validateRegisterForm() {
+function validateRegForm() {
   const username = document.getElementById("regUsername").value.trim();
   const password = document.getElementById("regPass").value;
   const confirmPassword = document.getElementById("regPassConf").value;
   const firstName = document.getElementById("regFirstName").value.trim();
   const lastName = document.getElementById("regLastName").value.trim();
   const email = document.getElementById("regEmail").value.trim();
-  const errorDiv = document.getElementById("registerError");
+  const errorDiv = document.getElementById("regError");
 
   if (!username || !password || !confirmPassword || !firstName || !lastName || !email) {
     errorDiv.textContent = "All fields are required.";
@@ -110,6 +110,10 @@ function validateRegisterForm() {
     errorDiv.textContent = "Invalid email format.";
     return false;
   }
+  if (users.some(user => user.username === username)) {
+    errorDiv.textContent = "Username already exists.";
+    return false;
+  }
   users.push({ username, password });
   alert("Registration successful! You can now log in.");
   showScreen("login");
@@ -127,7 +131,6 @@ function validateLoginForm() {
     return false;
   }
   currUser = username;
-  history = [];
   alert("Login successful!");
   showScreen("config");
   return false;
@@ -403,12 +406,8 @@ function endTime() {
 
 function endGame() {
         console.log("Game Over! Score: " + score);
-        // Add the new entry to the history array
         gameHistory.push({ score: score, timeLeft: timeLeft });
-
-        // Sort the history array by score in descending order
         gameHistory.sort((a, b) => b.score - a.score);
-    
         displayScoreTable();
         console.log("Game Over! Score: " + score);
         showScreen("scoreTable");
