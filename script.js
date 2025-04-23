@@ -29,18 +29,18 @@ function setupGame() {
 
 
 function loadBirthDateOptions() {
-  const yearSelect = document.getElementById("birthYear");
+  const yearSelect = document.getElementById("birthDay");
   const monthSelect = document.getElementById("birthMonth");
-  const daySelect = document.getElementById("birthDay");
+  const daySelect = document.getElementById("birthYear");
 
-  for (let y = 1950; y <= new Date().getFullYear(); y++) {
-    yearSelect.append(new Option(y, y));
+  for (let d = 1; d <= 31; d++) {
+    daySelect.append(new Option(d, d));
   }
   for (let m = 1; m <= 12; m++) {
     monthSelect.append(new Option(m, m));
   }
-  for (let d = 1; d <= 31; d++) {
-    daySelect.append(new Option(d, d));
+  for (let y = 1900; y <= new Date().getFullYear(); y++) {
+    yearSelect.append(new Option(y, y));
   }
 }
 
