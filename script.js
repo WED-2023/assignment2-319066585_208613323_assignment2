@@ -322,24 +322,21 @@ function checkCollisions() {
 
 
 function enemyShoot() {
-  if (enemyBullets.length > 0) {
-    var activeBullet = enemyBullets[0];
-    if (activeBullet.y < canvas.height * 0.75) {
-      return;
+    if (enemyBullets.length > 0) {
+      const activeBullet = enemyBullets[0];
+      if (activeBullet.y < canvas.height * 0.75) return;
     }
-  }
-  var aliveEnemies = enemies.filter(enemy => enemy.alive);
-  if (aliveEnemies.length === 0) {
-    return;
-  }
-  var shooter = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
-  enemyBullets.push({
-    x: shooter.x + shooter.width / 2 - 2,
-    y: shooter.y + shooter.height,
-    width: 4,
-    height: 10
-  });
+    const aliveEnemies = enemies.filter(enemy => enemy.alive);
+    if (aliveEnemies.length === 0) return;
+    const shooter = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
+    enemyBullets = [{
+      x: shooter.x + shooter.width / 2 - 2,
+      y: shooter.y + shooter.height,
+      width: 4,
+      height: 10
+    }];
 }
+  
 
 
 function updateEnemyBullets() {
