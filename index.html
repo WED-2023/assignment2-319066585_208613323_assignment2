@@ -56,6 +56,26 @@
             </form>
             <div id="regError" style="color: red;"></div>
         </div>
+
+
+        <div id="config" class="screen" style="display:none">
+            <h2>Game Settings</h2>
+            <form id="configForm" onsubmit="startGame(); return false;">
+              <label>Select shoot key:
+                <input type="text" id="shootKey" maxlength="1" required placeholder="Space">
+              </label><br>
+              <label>Game duration (min 2 minutes):
+                <input type="number" id="gameTime" min="2" value="2" required> minutes
+              </label><br>
+              <label>Spaceship color:
+                <input type="color" id="shipColor" value="#00ffcc">
+              </label><br>
+              <label>Enemy color:
+                <input type="color" id="enemyColor" value="#ff4444">
+              </label><br>
+              <button type="submit">Start Game</button>
+            </form>
+          </div>
     </main>
 
     <div id="aboutModal" class="modal" style="display: none;">
