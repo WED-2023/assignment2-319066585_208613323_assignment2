@@ -20,7 +20,6 @@ var gameDuration = 120;
 var enemies = [];
 var enemySpeed = 2;
 var enemyDirection = 1; // 1 for right, -1 for left
-var enemyMoveInterval = 1000; // milliseconds
 
 
 var enemyMoveTimer = null;
@@ -30,8 +29,6 @@ var enemyShootSpeed = 5; // speed of enemy bullets
 var enemyBullets = [];
 var lives = 3;
 var lastEnemyShotTime = 0;
-var enemyBulletReadyToShoot = true;
-
 var shootPlayerSound = new Audio("retro-laser-1-236669.mp3");
 var shootEnemySound = new Audio("laser-104024.mp3");
 var hitSound = new Audio("small-explosion-94980.mp3");
@@ -243,7 +240,7 @@ function endTime() {
     message = "Winner! Score: " + score;
   }
   alert(message);
-  showScreen("welcome"); //להוסיף מסך של טבלת השיאים האישית של השחקן וכפתור למשחק חדש
+  showScreen("welcome");
 }
 
 
@@ -279,7 +276,6 @@ function gameLoop() {
   }
   requestAnimationFrame(gameLoop);
 }
-
 
 
 function clearCanvas() {
@@ -340,7 +336,6 @@ function checkCollisions() {
         else if (enemy.row === 3) {
           score += 5;
         }
-        //להוסיף מנגינת רקע של פיצוץ
       }
     });
   });
@@ -348,49 +343,40 @@ function checkCollisions() {
 
 
 function enemyShoot() {
-  if (!enemyBulletReadyToShoot) return;
-
+  if (enemyBullets.length > 0) {
+    const activeBullet = enemyBullets[0];
+    if (activeBullet.y < canvas.heigh) return;
+  }
   const aliveEnemies = enemies.filter(enemy => enemy.alive);
   if (aliveEnemies.length === 0) return;
 
   const shooter = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
-
-  enemyBullets.push({
+  enemyBullets = [{
     x: shooter.x + shooter.width / 2 - 2,
     y: shooter.y + shooter.height,
     width: 4,
     height: 10
-  });
-
-  enemyBulletReadyToShoot = false;
+  }];
   shootEnemySound.currentTime = 0;
   shootEnemySound.play();
 }
-
 
 
 function updateEnemyBullets() {
   enemyBullets = enemyBullets.filter(bullet => bullet.y < canvas.height);
 
   enemyBullets.forEach(bullet => {
-    bullet.y += enemyShootSpeed;
-
-    if (!enemyBulletReadyToShoot && bullet.y >= canvas.height * 0.75) {
-      enemyBulletReadyToShoot = true;
-    }
-
-    if (bullet.x < player.x + player.width &&
-        bullet.x + bullet.width > player.x &&
-        bullet.y < player.y + player.height &&
-        bullet.y + bullet.height > player.y) {
+    bullet.y += 5;
+    if (bullet.x < player.x + player.width && bullet.x + bullet.width > player.x && bullet.y < player.y + player.height && bullet.y + bullet.height > player.y) {
       lives--;
+      explosionSound.currentTime = 0;
+      explosionSound.play();
       bullet.y = canvas.height + 1;
       player.x = canvas.width / 2;
       player.y = canvas.height - 80;
     }
   });
 }
-
 
 
 function drawEnemyBullets() {
@@ -430,8 +416,6 @@ function displayScoreTable() {
     container.innerHTML += table;
     container.style.display = "block";
   }
-  
-
 
 
 function drawInformation() {
