@@ -19,12 +19,14 @@ var player = {
 
 window.addEventListener("load", setupGame, false);
 
+
 function setupGame() {
   canvas = document.getElementById("gameCanvas");
   context = canvas.getContext("2d");
   loadBirthDateOptions();
   showScreen("welcome");
 }
+
 
 function loadBirthDateOptions() {
   const yearSelect = document.getElementById("birthYear");
@@ -42,16 +44,18 @@ function loadBirthDateOptions() {
   }
 }
 
+
 function showScreen(screenId) {
   document.querySelectorAll(".screen").forEach(screen => {
     screen.style.display = screen.id === screenId ? "block" : "none";
   });
 }
 
+
 function validateRegisterForm() {
   const username = document.getElementById("regUsername").value.trim();
-  const password = document.getElementById("regPassword").value;
-  const confirmPassword = document.getElementById("regConfirmPassword").value;
+  const password = document.getElementById("regPass").value;
+  const confirmPassword = document.getElementById("regPassConf").value;
   const firstName = document.getElementById("regFirstName").value.trim();
   const lastName = document.getElementById("regLastName").value.trim();
   const email = document.getElementById("regEmail").value.trim();
@@ -77,18 +81,17 @@ function validateRegisterForm() {
     errorDiv.textContent = "Invalid email format.";
     return false;
   }
-
   users.push({ username, password });
   alert("Registration successful! You can now log in.");
   showScreen("login");
   return false;
 }
 
+
 function validateLoginForm() {
   const username = document.getElementById("loginUsername").value.trim();
-  const password = document.getElementById("loginPassword").value;
+  const password = document.getElementById("loginPass").value;
   const errorDiv = document.getElementById("loginError");
-
   const user = users.find(user => user.username === username && user.password === password);
   if (!user) {
     errorDiv.textContent = "Invalid username or password.";
@@ -98,6 +101,7 @@ function validateLoginForm() {
   showScreen("config");
   return false;
 }
+
 
 function startGame() {
   shootKey = document.getElementById("shootKey").value.trim() || ' ';
@@ -114,6 +118,7 @@ function startGame() {
   gameLoop();
 }
 
+
 function gameLoop() {
   clearCanvas();
   updatePlayer();
@@ -121,9 +126,11 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
+
 function clearCanvas() {
   context.clearRect(0, 0, canvas.width, canvas.height);
 }
+
 
 function updatePlayer() {
   if (keysPressed["ArrowLeft"] && player.x > 0) player.x -= player.speed;
@@ -132,27 +139,33 @@ function updatePlayer() {
   if (keysPressed["ArrowDown"] && player.y + player.height < canvas.height) player.y += player.speed;
 }
 
+
 function drawPlayer() {
   context.fillStyle = shipColor;
   context.fillRect(player.x, player.y, player.width, player.height);
 }
 
+
 function openAbout() {
   document.getElementById("aboutModal").style.display = "block";
 }
 
+
 function closeAbout() {
   document.getElementById("aboutModal").style.display = "none";
 }
+
 
 window.addEventListener("keydown", e => {
   if (e.key === "Escape") closeAbout();
   keysPressed[e.key] = true;
 });
 
+
 window.addEventListener("keyup", e => {
   keysPressed[e.key] = false;
 });
+
 
 window.addEventListener("click", e => {
   const modal = document.getElementById("aboutModal");
