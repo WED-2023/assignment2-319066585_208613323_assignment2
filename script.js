@@ -187,23 +187,29 @@ function drawEnemies() {
 
 
 function startGame() {
-  shootKey = document.getElementById("shootKey").value.trim() || ' ';
-  gameDuration = parseInt(document.getElementById("gameTime").value) * 60;
-  shipColor = document.getElementById("shipColor").value;
-  enemyColor = document.getElementById("enemyColor").value;
-  timeElapsed = 0;
-  timeLeft = gameDuration;
-  score = 0;
-  playerBullets = [];
-  if (gameDuration < 120) {
-    alert("Minimum duration is 2 minutes.");
-    return;
-  }
-  showScreen("game");
-  createEnemies();
-  startTimer();
-  gameLoop();
+    shootKey = document.getElementById("shootKey").value.trim() || ' ';
+    gameDuration = parseInt(document.getElementById("gameTime").value) * 60;
+    shipColor = document.getElementById("shipColor").value;
+    enemyColor = document.getElementById("enemyColor").value;
+  
+    if (gameDuration < 120) {
+      alert("Minimum duration is 2 minutes.");
+      return;
+    }
+  
+    timeElapsed = 0;
+    timeLeft = gameDuration;
+    score = 0;
+    lives = 3;
+    playerBullets = [];
+    enemyBullets = [];
+  
+    showScreen("game");
+    createEnemies();
+    startTimer();
+    gameLoop();
 }
+  
 
 
 function startTimer() {
