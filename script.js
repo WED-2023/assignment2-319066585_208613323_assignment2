@@ -5,9 +5,33 @@ var users = [ { username: "p", password: "testuser" } ];
 var keysPressed = {};
 var shootKey = ' ';
 
+var timeElapsed;
+var timeLeft;
+var timerInterval;
+var score = 0;
+
+var currUser = null;
+var history = [];
 var shipColor = "#00ffcc";
+var playerBullets = [];
+
 var enemyColor = "#ff4444";
 var gameDuration = 120;
+var enemies = [];
+var enemySpeed = 2;
+var enemyDirection = 1; // 1 for right, -1 for left
+var enemyMoveInterval = 1000; // milliseconds
+
+
+var enemyMoveTimer = null;
+var enemyShootInterval = 2000; // milliseconds
+var enemyShootTimer = null;
+var enemyShootSpeed = 5; // speed of enemy bullets
+var enemyBullets = [];
+var lives = 3;
+var lastEnemyShotTime = 0;
+
+
 
 var player = {
   x: 400,
@@ -97,9 +121,68 @@ function validateLoginForm() {
     errorDiv.textContent = "Invalid username or password.";
     return false;
   }
+  currUser = username;
+  history = [];
   alert("Login successful!");
   showScreen("config");
   return false;
+}
+
+
+function createEnemies() {
+  enemies = [];
+  let rows = 4;
+  let cols = 5;
+  let spacing = 70;
+  let startX = 100;
+  let startY = 50;
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      enemies.push({
+        x: startX + col * spacing,
+        y: startY + row * spacing,
+        width: 40,
+        height: 20,
+        alive: true,
+        row: row // לשם ניקוד
+      });
+    }
+  }
+}
+
+
+function updateEnemies() {
+  if (timeElapsed === 5) {
+    enemySpeed = 4;
+  }
+  if (timeElapsed === 10) {
+    enemySpeed = 6;
+  }
+  if (timeElapsed === 15) {
+    enemySpeed = 8;
+  }
+  if (timeElapsed === 20) {
+    enemySpeed = 10;
+  }
+  enemies.forEach(enemy => {
+    if (enemy.alive) {
+      enemy.x += enemySpeed * enemyDirection;
+      if (enemy.x + enemy.width >= canvas.width || enemy.x <= 0) {
+        enemyDirection *= -1;
+      }
+    }
+  });
+}
+
+
+function drawEnemies() {
+  context.fillStyle = enemyColor;
+  enemies.forEach(enemy => {
+    if (enemy.alive) {
+      context.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+    }
+  });
 }
 
 
@@ -108,23 +191,81 @@ function startGame() {
   gameDuration = parseInt(document.getElementById("gameTime").value) * 60;
   shipColor = document.getElementById("shipColor").value;
   enemyColor = document.getElementById("enemyColor").value;
-
+  timeElapsed = 0;
+  timeLeft = gameDuration;
+  score = 0;
+  playerBullets = [];
+  startTimer();
   if (gameDuration < 120) {
     alert("Minimum duration is 2 minutes.");
     return;
   }
 
   showScreen("game");
+  createEnemies();
   gameLoop();
 }
+
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      endTime();
+    }
+  }, 1000);
+}
+
+
+function endTime() {
+  let message;
+  if (score < 100) {
+    message = "You can do better. Score: " + score;
+  } else {
+    message = "Winner! Score: " + score;
+  }
+  alert(message);
+  showScreen("welcome"); //להוסיף מסך של טבלת השיאים האישית של השחקן וכפתור למשחק חדש
+}
+
 
 
 function gameLoop() {
   clearCanvas();
   updatePlayer();
+  updateEnemies();
+  updatePlayerBullets();
+  updateEnemyBullets();
+  checkCollisions();
+  enemyShoot();
   drawPlayer();
+  drawEnemies();
+  drawPlayerBullets();
+  drawEnemyBullets();
+  drawInformation();
+
+  if (lives <= 0) {
+    showHistory();
+    alert("You Lost!");
+    showScreen("welcome"); //להוסיף מסך של טבלת השיאים האישית של השחקן וכפתור למשחק חדש
+    return;
+  }
+  if (timeLeft <= 0) {
+    showHistory();
+    clearInterval(timerInterval);
+    endTime();
+    return;
+  }
+  if (enemies.every(enemy => !enemy.alive)) {
+    showHistory();
+    alert("You won! Score: " + score);
+    showScreen("welcome"); //להוסיף מסך של טבלת השיאים האישית של השחקן וכפתור למשחק חדש
+    return;
+  }
   requestAnimationFrame(gameLoop);
 }
+
 
 
 function clearCanvas() {
@@ -146,6 +287,125 @@ function drawPlayer() {
 }
 
 
+function updatePlayerBullets() {
+  playerBullets = playerBullets.filter(bullet => bullet.y > 0);
+  playerBullets.forEach(bullet => {
+    bullet.y -= 7;
+  });
+}
+
+
+function drawPlayerBullets() {
+  context.fillStyle = "#00ffff"; 
+  playerBullets.forEach(bullet => {
+    context.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+  });
+}
+
+
+function checkCollisions() {
+  playerBullets.forEach(bullet => {
+    enemies.forEach(enemy => {
+      if (enemy.alive &&
+          bullet.x < enemy.x + enemy.width &&
+          bullet.x + bullet.width > enemy.x &&
+          bullet.y < enemy.y + enemy.height &&
+          bullet.y + bullet.height > enemy.y) {
+        enemy.alive = false;
+        bullet.y = -100; 
+        if (enemy.row === 0) {
+          score += 20;
+        } else if (enemy.row === 1) { 
+          score += 15;
+          }
+        else if (enemy.row === 2) {
+          score += 10;
+        }
+        else if (enemy.row === 3) {
+          score += 5;
+        }
+        //להוסיף מנגינת רקע של פיצוץ
+      }
+    });
+  });
+}
+
+
+function enemyShoot() {
+  if (enemyBullets.length > 0) {
+    var activeBullet = enemyBullets[0];
+    if (activeBullet.y < canvas.height * 0.75) {
+      return;
+    }
+  }
+  var aliveEnemies = enemies.filter(enemy => enemy.alive);
+  if (aliveEnemies.length === 0) {
+    return;
+  }
+  var shooter = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
+  enemyBullets.push({
+    x: shooter.x + shooter.width / 2 - 2,
+    y: shooter.y + shooter.height,
+    width: 4,
+    height: 10
+  });
+}
+
+
+function updateEnemyBullets() {
+  enemyBullets = enemyBullets.filter(bullet => bullet.y < canvas.height);
+
+  enemyBullets.forEach(bullet => {
+    bullet.y += 5;
+    if (bullet.x < player.x + player.width && bullet.x + bullet.width > player.x && bullet.y < player.y + player.height && bullet.y + bullet.height > player.y) {
+      lives--;
+      bullet.y = canvas.height + 1;
+      player.x = canvas.width / 2;
+      player.y = canvas.height - 80;
+      // להוסיף אפקט או סאונד כאן
+    }
+  });
+}
+
+
+function drawEnemyBullets() {
+  context.fillStyle = "#ff0000";
+  enemyBullets.forEach(bullet => {
+    context.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+  });
+}
+
+
+function showHistory() {
+  history.push(score);
+  history.sort((a, b) => b - a);
+  var html = "<h3>Your Scores:</h3><ol>";
+  history.forEach((s, i) => {
+    html += `<li>${s}${s === score ? " ← last game" : ""}</li>`;
+  });
+  html += "</ol>";
+  var resultDiv = document.createElement("div");
+  resultDiv.innerHTML = html;
+  resultDiv.style.background = "#222";
+  resultDiv.style.color = "#fff";
+  resultDiv.style.padding = "20px";
+  resultDiv.style.marginTop = "20px";
+  resultDiv.style.border = "2px solid #ccc";
+  resultDiv.style.textAlign = "left";
+  document.body.appendChild(resultDiv);
+}
+
+
+
+function drawInformation() {
+  context.fillStyle = "#ffffff";
+  context.font = "20px Arial";
+  context.fillText("Score: " + score, 20, 30);
+  context.fillText("Time: " + Math.floor(timeLeft / 60) + ":" + (timeLeft % 60 < 10 ? "0" : "") + (timeLeft % 60), 20, 80);
+  context.fillText("Lives: " + lives, 20, 55);
+}
+
+
 function openAbout() {
   document.getElementById("aboutModal").style.display = "block";
 }
@@ -159,6 +419,14 @@ function closeAbout() {
 window.addEventListener("keydown", e => {
   if (e.key === "Escape") closeAbout();
   keysPressed[e.key] = true;
+  if (e.key === shootKey) {
+    playerBullets.push({
+      x: player.x + player.width / 2 - 2,
+      y: player.y,
+      width: 4,
+      height: 10
+    });
+  }
 });
 
 
