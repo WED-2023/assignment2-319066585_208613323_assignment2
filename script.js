@@ -161,27 +161,26 @@ function createEnemies() {
 
 
 function updateEnemies() {
-  if (timeElapsed === 5) {
-    enemySpeed = 12;
-  }
-  if (timeElapsed === 10) {
-    enemySpeed = 16;
-  }
-  if (timeElapsed === 15) {
-    enemySpeed = 20;
-  }
-  if (timeElapsed === 20) {
-    enemySpeed = 24;
-  }
+  var shouldReverse = false;
   enemies.forEach(enemy => {
     if (enemy.alive) {
-      enemy.x += enemySpeed * enemyDirection;
-      if (enemy.x + enemy.width >= canvas.width || enemy.x <= 0) {
-        enemyDirection *= -1;
+      const nextX = enemy.x + enemySpeed * enemyDirection;
+      if (nextX <= 0 || nextX + enemy.width >= canvas.width) {
+        shouldReverse = true;
       }
     }
   });
+  if (shouldReverse) {
+    enemyDirection *= -1;
+  } else {
+    enemies.forEach(enemy => {
+      if (enemy.alive) {
+        enemy.x += enemySpeed * enemyDirection;
+      }
+    });
+  }
 }
+
 
 
 function drawEnemies() {
@@ -419,7 +418,7 @@ function displayScoreTable() {
     console.log("Displaying score table...");
     const container = document.getElementById("scoreTable");
     container.innerHTML = "<h2>Your Score:</h2>";
-    let table = "<table border='1'><tr><th>Date</th><th>Score</th></tr>";
+    let table = "<table border='1'><tr><th>Time(second)</th><th>Score</th></tr>";
     gameHistory.forEach(entry => {
       table += `<tr><td>${entry.timeLeft}</td><td>${entry.score}</td></tr>`;
     });
@@ -449,6 +448,11 @@ function closeAbout() {
 
 
 window.addEventListener("keydown", e => {
+  const keysToPrevent = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+  if (keysToPrevent.includes(e.key)) {
+    e.preventDefault();
+  }
+
   if (e.key === "Escape") closeAbout();
   keysPressed[e.key] = true;
 
@@ -463,6 +467,7 @@ window.addEventListener("keydown", e => {
     });
   }
 });
+
 
 
 

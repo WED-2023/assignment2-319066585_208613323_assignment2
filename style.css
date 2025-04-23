@@ -7,6 +7,9 @@ body {
     background-repeat: no-repeat;
     background-attachment: fixed;
     color: #ffffff;
+    min-width: 1366px;
+    min-height: 768px;
+    overflow-x: hidden;
   }
   
   header, nav, main, footer {
@@ -100,11 +103,15 @@ body {
     color: #f55;
   }
   
-  /* קנבס המשחק */
+  /* ✅ גודל קבוע לקנבס המשחק */
   canvas {
+    width: 1366px;
+    height: 768px;
+    max-width: 100%;
     display: block;
     margin: 20px auto;
     background: rgba(0, 0, 0, 0.9);
     border: 2px solid #fff;
     border-radius: 10px;
   }
+  
