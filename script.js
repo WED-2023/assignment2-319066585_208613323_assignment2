@@ -11,14 +11,14 @@ var timerInterval;
 var score = 0;
 
 var currUser = null;
-var history = [];
+var gameHistory = [];
 var shipColor = "#00ffcc";
 var playerBullets = [];
 
 var enemyColor = "#ff4444";
 var gameDuration = 120;
 var enemies = [];
-var enemySpeed = 2;
+var enemySpeed = 4;
 var enemyDirection = 1; // 1 for right, -1 for left
 
 
@@ -159,16 +159,16 @@ function createEnemies() {
 
 function updateEnemies() {
   if (timeElapsed === 5) {
-    enemySpeed = 4;
+    enemySpeed = 12;
   }
   if (timeElapsed === 10) {
-    enemySpeed = 6;
+    enemySpeed = 16;
   }
   if (timeElapsed === 15) {
-    enemySpeed = 8;
+    enemySpeed = 20;
   }
   if (timeElapsed === 20) {
-    enemySpeed = 10;
+    enemySpeed = 24;
   }
   enemies.forEach(enemy => {
     if (enemy.alive) {
@@ -342,24 +342,28 @@ function checkCollisions() {
 }
 
 
+let lastEnemyBullet = null;
+
 function enemyShoot() {
-  if (enemyBullets.length > 0) {
-    const activeBullet = enemyBullets[0];
-    if (activeBullet.y < canvas.heigh) return;
-  }
+  if (lastEnemyBullet && lastEnemyBullet.y < canvas.height * 0.75) return;
+
   const aliveEnemies = enemies.filter(enemy => enemy.alive);
   if (aliveEnemies.length === 0) return;
 
   const shooter = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
-  enemyBullets = [{
+  const newBullet = {
     x: shooter.x + shooter.width / 2 - 2,
     y: shooter.y + shooter.height,
     width: 4,
     height: 10
-  }];
+  };
+  enemyBullets.push(newBullet);
+  lastEnemyBullet = newBullet;
+
   shootEnemySound.currentTime = 0;
   shootEnemySound.play();
 }
+
 
 
 function updateEnemyBullets() {
@@ -398,19 +402,27 @@ function endTime() {
 
 
 function endGame() {
-    history.push(score);
-    history.sort((a, b) => b - a);
-    displayScoreTable();
-    showScreen("scoreTable");
+        console.log("Game Over! Score: " + score);
+        // Add the new entry to the history array
+        gameHistory.push({ score: score, timeLeft: timeLeft });
+
+        // Sort the history array by score in descending order
+        gameHistory.sort((a, b) => b.score - a.score);
+    
+        displayScoreTable();
+        console.log("Game Over! Score: " + score);
+        showScreen("scoreTable");
+
 }
 
 
 function displayScoreTable() {
+    console.log("Displaying score table...");
     const container = document.getElementById("scoreTable");
     container.innerHTML = "<h2>Your Score:</h2>";
     let table = "<table border='1'><tr><th>Date</th><th>Score</th></tr>";
-    scoreHistory.forEach(entry => {
-      table += `<tr><td>${entry.date}</td><td>${entry.score}</td></tr>`;
+    gameHistory.forEach(entry => {
+      table += `<tr><td>${entry.timeLeft}</td><td>${entry.score}</td></tr>`;
     });
     table += "</table>";
     container.innerHTML += table;
