@@ -7,11 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <h1>Spaceship Game</h1>
-        <img src="mySpaceship.png" alt="Site Logo" height="50">
-    </header>
-
     <nav>
         <button onclick="showScreen('welcome')">Home</button>
         <button onclick="showScreen('login')">Login</button>
@@ -19,11 +14,16 @@
         <button onclick="openAbout()">About</button>
     </nav>
 
+    <header>
+        <h1>Spaceship Game</h1>
+        <img src="mySpaceship.png" alt="Site Logo" height="50">
+    </header>
+
     <main>
         <div id="welcome" class="screen">
             <h2>Welcome</h2>
             <p>Yehezkel Kadosi: 319066585, Tamir Cohen: 208613323</p>
-            <a href="https://wed-2023.github.io/assignment2-319066585_208613323_assignment2/" target="_blank">Link To The Game</a>
+            <a href="https://wed-2023.github.io/assignment2-319066585_208613323_assignment2/" target="_blank" style="color: aqua;">Link To The Game</a>
             <br>
             <div class="center-buttons">
                 <button onclick="showScreen('login')">Login</button>

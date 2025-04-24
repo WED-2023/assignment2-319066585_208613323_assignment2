@@ -22,15 +22,16 @@ body {
 nav {
   display: flex;
   justify-content: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
   gap: 20px;
   padding: 10px 0;
 }
   
 header, main, footer {
   padding: 1rem;
-  background-color: rgba(0, 0, 0, 0.6);
   margin: 10px;
-  border-radius: 12px;
+  text-align: center;
 }
   
 h1 {
