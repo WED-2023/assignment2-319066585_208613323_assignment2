@@ -9,6 +9,7 @@ var timeElapsed;
 var timeLeft;
 var timerInterval;
 var score = 0;
+var noFirstGame = false;
 
 var currUser = null;
 var gameHistory = [];
@@ -20,15 +21,15 @@ var gameDuration = 120;
 var enemies = [];
 var enemySpeed = 4;
 var enemyDirection = 1; // 1 for right, -1 for left
+var lastEnemyBullet = null;
 
 
-var enemyMoveTimer = null;
 var enemyShootInterval = 2000; // milliseconds
-var enemyShootTimer = null;
-var enemyShootSpeed = 5; // speed of enemy bullets
+var enemyShootSpeed = 8; // speed of enemy bullets
 var enemyBullets = [];
 var lives = 3;
 var lastEnemyShotTime = 0;
+
 var shootPlayerSound = new Audio("retro-laser-1-236669.mp3");
 var shootEnemySound = new Audio("laser-104024.mp3");
 var hitSound = new Audio("small-explosion-94980.mp3");
@@ -203,7 +204,6 @@ function startGame() {
       alert("Minimum duration is 2 minutes.");
       return;
     }
-  
     score = 0;
     timeElapsed = 0;
     timeLeft = gameDuration;
@@ -211,8 +211,10 @@ function startGame() {
     player.y = canvas.height - 80;
     playerBullets = [];
     enemyBullets = [];
+    lastEnemyShotTime = 0;
+    lastEnemyBullet = null;
     lives = 3;
-  
+    
     showScreen("game");
     createEnemies();
     backgroundMusic.currentTime = 0;
@@ -345,8 +347,6 @@ function checkCollisions() {
   });
 }
 
-
-let lastEnemyBullet = null;
 
 function enemyShoot() {
   if (lastEnemyBullet && lastEnemyBullet.y < canvas.height * 0.75) return;
