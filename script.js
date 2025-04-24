@@ -204,12 +204,14 @@ function startGame() {
       return;
     }
   
+    score = 0;
     timeElapsed = 0;
     timeLeft = gameDuration;
-    score = 0;
-    lives = 3;
+    player.x = canvas.width / 2;
+    player.y = canvas.height - 80;
     playerBullets = [];
     enemyBullets = [];
+    lives = 3;
   
     showScreen("game");
     createEnemies();
@@ -415,17 +417,15 @@ function endGame() {
 
 
 function displayScoreTable() {
-    console.log("Displaying score table...");
-    const container = document.getElementById("scoreTable");
-    container.innerHTML = "<h2>Your Score:</h2>";
-    let table = "<table border='1'><tr><th>Time(second)</th><th>Score</th></tr>";
-    gameHistory.forEach(entry => {
+  console.log("Displaying score table...");
+  const tableDiv = document.getElementById("scoreBoard");
+  let table = "<table border='1'><tr><th>Time (seconds)</th><th>Score</th></tr>";
+  gameHistory.forEach(entry => {
       table += `<tr><td>${entry.timeLeft}</td><td>${entry.score}</td></tr>`;
-    });
-    table += "</table>";
-    container.innerHTML += table;
-    container.style.display = "block";
-  }
+  });
+  table += "</table>";
+  tableDiv.innerHTML = table;
+}
 
 
 function drawInformation() {
