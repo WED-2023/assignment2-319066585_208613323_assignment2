@@ -28,23 +28,26 @@ body {
     display: none;
   }
   
-  /* כפתורים מודרניים */
   button {
-    background: linear-gradient(to right, #00c6ff, #0072ff);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1rem;
-    border-radius: 8px;
+    font-family: 'Orbitron', sans-serif;
+    background: linear-gradient(145deg, #1e1e2f, #2b2b45);
+    border: 2px solid #00ffe0;
+    color: #00ffe0;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 12px;
     cursor: pointer;
-    margin: 5px;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px #00ffe0, 0 0 20px #00ffe0 inset;
   }
   
   button:hover {
+    background: #00ffe0;
+    color: #1e1e2f;
+    box-shadow: 0 0 20px #00ffe0, 0 0 40px #00ffe0 inset;
     transform: scale(1.05);
-    box-shadow: 0 0 10px #00c6ff;
   }
+  
   
   input, select {
     padding: 5px;
@@ -58,12 +61,13 @@ body {
     margin: 10px 0;
   }
   
-  /* טבלת ניקוד */
+
   table {
     width: 100%;
     border-collapse: collapse;
     background-color: rgba(0, 0, 0, 0.6);
   }
+  
   
   th, td {
     border: 1px solid #fff;

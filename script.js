@@ -24,7 +24,7 @@ var enemyDirection = 1; // 1 for right, -1 for left
 var lastEnemyBullet = null;
 
 
-var enemyShootInterval = 2000; // milliseconds
+var enemyShootInterval = 2000;
 var enemyShootSpeed = 8; // speed of enemy bullets
 var enemyBullets = [];
 var lives = 3;
@@ -37,13 +37,17 @@ var explosionSound = new Audio("explosion-312361.mp3");
 var backgroundMusic = new Audio("game-music-loop-4-144341.mp3");
 backgroundMusic.loop = true;
 
+var playerImage = new Image();
+playerImage.src = "mySpaceship.png";
 
+var enemyImage = new Image();
+enemyImage.src = "enemySpaceship.png";
 
 var player = {
   x: 400,
   y: 550,
-  width: 40,
-  height: 20,
+  width: 100,
+  height: 150,
   speed: 5
 };
 
@@ -140,19 +144,19 @@ function validateLoginForm() {
 
 function createEnemies() {
   enemies = [];
-  let rows = 4;
-  let cols = 5;
-  let spacing = 70;
-  let startX = 100;
-  let startY = 50;
+  var rows = 4;
+  var cols = 5;
+  var spacing = 70;
+  var startX = 100;
+  var startY = 50;
 
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       enemies.push({
         x: startX + col * spacing,
         y: startY + row * spacing,
-        width: 40,
-        height: 20,
+        width: 100,
+        height: 150,
         alive: true,
         row: row
       });
@@ -185,10 +189,9 @@ function updateEnemies() {
 
 
 function drawEnemies() {
-  context.fillStyle = enemyColor;
   enemies.forEach(enemy => {
     if (enemy.alive) {
-      context.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+      context.drawImage(enemyImage, enemy.x, enemy.y, enemy.width, enemy.height);
     }
   });
 }
@@ -298,8 +301,7 @@ function updatePlayer() {
 
 
 function drawPlayer() {
-  context.fillStyle = shipColor;
-  context.fillRect(player.x, player.y, player.width, player.height);
+  context.drawImage(playerImage, player.x, player.y, player.width, player.height);
 }
 
 
