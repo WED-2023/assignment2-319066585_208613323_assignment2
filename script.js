@@ -23,7 +23,7 @@ var lastEnemyBullet = null;
 
 
 var enemyShootInterval = 2000;
-var enemyShootSpeed = 8; // speed of enemy bullets
+var enemyShootSpeed = 5; // speed of enemy bullets
 var enemyBullets = [];
 var lives = 3;
 var lastEnemyShotTime = 0;
@@ -195,7 +195,7 @@ function drawEnemies() {
 
 
 function startGame() {
-    shootKey = document.getElementById("shootKey").value.trim();
+    shootKey = document.getElementById("shootKey").value.trim() ||' ';
     gameDuration = parseInt(document.getElementById("gameTime").value) * 60;
     if (gameDuration < 120) {
       alert("Minimum duration is 2 minutes.");
@@ -355,8 +355,8 @@ function enemyShoot() {
   const newBullet = {
     x: shooter.x + shooter.width / 2 - 2,
     y: shooter.y + shooter.height,
-    width: 8,
-    height: 20
+    width: 4,
+    height: 10
   };
   enemyBullets.push(newBullet);
   lastEnemyBullet = newBullet;
