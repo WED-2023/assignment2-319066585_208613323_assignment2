@@ -278,6 +278,7 @@ function gameLoop() {
     endGame();
     return;
   }
+  //להוסיף סגירת משחק
   requestAnimationFrame(gameLoop);
 }
 
@@ -409,7 +410,6 @@ function endGame() {
         displayScoreTable();
         console.log("Game Over! Score: " + score);
         showScreen("scoreTable");
-
 }
 
 
@@ -454,8 +454,10 @@ window.addEventListener("keydown", e => {
   keysPressed[e.key] = true;
 
   if (e.key === shootKey) {
-    shootPlayerSound.currentTime = 0;
-    shootPlayerSound.play();
+    if (enemies.length > 0) {
+      shootPlayerSound.currentTime = 0;
+      shootPlayerSound.play();
+    }
     playerBullets.push({
       x: player.x + player.width / 2 - 2,
       y: player.y,
