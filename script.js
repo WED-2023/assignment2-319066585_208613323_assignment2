@@ -13,11 +13,9 @@ var noFirstGame = false;
 
 var currUser = null;
 var gameHistory = [];
-var shipColor = "#00ffcc";
 var playerBullets = [];
 
-var enemyColor = "#ff4444";
-var gameDuration = 120;
+var gameDuration;
 var enemies = [];
 var enemySpeed = 4;
 var enemyDirection = 1; // 1 for right, -1 for left
@@ -46,8 +44,8 @@ enemyImage.src = "enemySpaceship.png";
 var player = {
   x: 400,
   y: 550,
-  width: 100,
-  height: 150,
+  width: 60,
+  height: 80,
   speed: 5
 };
 
@@ -155,8 +153,8 @@ function createEnemies() {
       enemies.push({
         x: startX + col * spacing,
         y: startY + row * spacing,
-        width: 100,
-        height: 150,
+        width: 60,
+        height: 80,
         alive: true,
         row: row
       });
@@ -187,7 +185,6 @@ function updateEnemies() {
 }
 
 
-
 function drawEnemies() {
   enemies.forEach(enemy => {
     if (enemy.alive) {
@@ -198,11 +195,8 @@ function drawEnemies() {
 
 
 function startGame() {
-    shootKey = document.getElementById("shootKey").value.trim() || ' ';
+    shootKey = document.getElementById("shootKey").value.trim();
     gameDuration = parseInt(document.getElementById("gameTime").value) * 60;
-    shipColor = document.getElementById("shipColor").value;
-    enemyColor = document.getElementById("enemyColor").value;
-  
     if (gameDuration < 120) {
       alert("Minimum duration is 2 minutes.");
       return;
@@ -211,12 +205,13 @@ function startGame() {
     timeElapsed = 0;
     timeLeft = gameDuration;
     player.x = canvas.width / 2;
-    player.y = canvas.height - 80;
+    player.y = canvas.height - 100;
     playerBullets = [];
     enemyBullets = [];
     lastEnemyShotTime = 0;
     lastEnemyBullet = null;
     lives = 3;
+
     
     showScreen("game");
     createEnemies();
@@ -325,10 +320,10 @@ function checkCollisions() {
   playerBullets.forEach(bullet => {
     enemies.forEach(enemy => {
       if (enemy.alive &&
-          bullet.x < enemy.x + enemy.width &&
-          bullet.x + bullet.width > enemy.x &&
-          bullet.y < enemy.y + enemy.height &&
-          bullet.y + bullet.height > enemy.y) {
+          bullet.x < enemy.x + enemy.width/2 &&
+          bullet.x + bullet.width/2 > enemy.x &&
+          bullet.y < enemy.y + enemy.height/2 &&
+          bullet.y + bullet.height/2 > enemy.y) {
         enemy.alive = false;
         hitSound.currentTime = 0;
         hitSound.play();
@@ -360,8 +355,8 @@ function enemyShoot() {
   const newBullet = {
     x: shooter.x + shooter.width / 2 - 2,
     y: shooter.y + shooter.height,
-    width: 4,
-    height: 10
+    width: 8,
+    height: 20
   };
   enemyBullets.push(newBullet);
   lastEnemyBullet = newBullet;
@@ -376,14 +371,14 @@ function updateEnemyBullets() {
   enemyBullets = enemyBullets.filter(bullet => bullet.y < canvas.height);
 
   enemyBullets.forEach(bullet => {
-    bullet.y += 5;
+    bullet.y += 10;
     if (bullet.x < player.x + player.width && bullet.x + bullet.width > player.x && bullet.y < player.y + player.height && bullet.y + bullet.height > player.y) {
       lives--;
       explosionSound.currentTime = 0;
       explosionSound.play();
       bullet.y = canvas.height + 1;
       player.x = canvas.width / 2;
-      player.y = canvas.height - 80;
+      player.y = canvas.height - 100;
     }
   });
 }
@@ -464,8 +459,8 @@ window.addEventListener("keydown", e => {
     playerBullets.push({
       x: player.x + player.width / 2 - 2,
       y: player.y,
-      width: 4,
-      height: 10
+      width: 6,
+      height: 15
     });
   }
 });
