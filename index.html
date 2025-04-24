@@ -48,9 +48,9 @@
                 <label>Last Name: <input type="text" id="regLastName" required></label><br>
                 <label>Email: <input type="email" id="regEmail" required></label><br>
                 <label>Date Of Birth:
-                    <select id="birthDay"></select>
-                    <select id="birthMonth"></select>
                     <select id="birthYear"></select>
+                    <select id="birthMonth"></select>
+                    <select id="birthDay"></select>
                 </label><br>
                 <button type="submit">Submit</button>
             </form>
@@ -79,12 +79,14 @@
 
 
         <div id="game" class="screen" style="display: none">
-            <canvas id="gameCanvas" width="800" height="600"></canvas>
+            <canvas id="gameCanvas" width="1366" height="768"></canvas>
         </div>
 
 
         <div id="scoreTable" class="screen" style="display: none">
-            <button type="submit" onclick="startGame(); return false;">New Game</button>  
+            <div id="scoreBoard"></div>
+            <button onclick="startGame()">New Game</button>
+            <button onclick="showScreen('welcome')">Back to Home</button>
         </div>
     </main>
 

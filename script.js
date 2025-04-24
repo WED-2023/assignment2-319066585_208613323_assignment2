@@ -81,14 +81,14 @@ function showScreen(screenId) {
 }
 
 
-function validateRegisterForm() {
+function validateRegForm() {
   const username = document.getElementById("regUsername").value.trim();
   const password = document.getElementById("regPass").value;
   const confirmPassword = document.getElementById("regPassConf").value;
   const firstName = document.getElementById("regFirstName").value.trim();
   const lastName = document.getElementById("regLastName").value.trim();
   const email = document.getElementById("regEmail").value.trim();
-  const errorDiv = document.getElementById("registerError");
+  const errorDiv = document.getElementById("regError");
 
   if (!username || !password || !confirmPassword || !firstName || !lastName || !email) {
     errorDiv.textContent = "All fields are required.";
@@ -110,6 +110,10 @@ function validateRegisterForm() {
     errorDiv.textContent = "Invalid email format.";
     return false;
   }
+  if (users.some(user => user.username === username)) {
+    errorDiv.textContent = "Username already exists.";
+    return false;
+  }
   users.push({ username, password });
   alert("Registration successful! You can now log in.");
   showScreen("login");
@@ -127,7 +131,6 @@ function validateLoginForm() {
     return false;
   }
   currUser = username;
-  history = [];
   alert("Login successful!");
   showScreen("config");
   return false;
@@ -158,27 +161,26 @@ function createEnemies() {
 
 
 function updateEnemies() {
-  if (timeElapsed === 5) {
-    enemySpeed = 12;
-  }
-  if (timeElapsed === 10) {
-    enemySpeed = 16;
-  }
-  if (timeElapsed === 15) {
-    enemySpeed = 20;
-  }
-  if (timeElapsed === 20) {
-    enemySpeed = 24;
-  }
+  var shouldReverse = false;
   enemies.forEach(enemy => {
     if (enemy.alive) {
-      enemy.x += enemySpeed * enemyDirection;
-      if (enemy.x + enemy.width >= canvas.width || enemy.x <= 0) {
-        enemyDirection *= -1;
+      const nextX = enemy.x + enemySpeed * enemyDirection;
+      if (nextX <= 0 || nextX + enemy.width >= canvas.width) {
+        shouldReverse = true;
       }
     }
   });
+  if (shouldReverse) {
+    enemyDirection *= -1;
+  } else {
+    enemies.forEach(enemy => {
+      if (enemy.alive) {
+        enemy.x += enemySpeed * enemyDirection;
+      }
+    });
+  }
 }
+
 
 
 function drawEnemies() {
@@ -202,12 +204,14 @@ function startGame() {
       return;
     }
   
+    score = 0;
     timeElapsed = 0;
     timeLeft = gameDuration;
-    score = 0;
-    lives = 3;
+    player.x = canvas.width / 2;
+    player.y = canvas.height - 80;
     playerBullets = [];
     enemyBullets = [];
+    lives = 3;
   
     showScreen("game");
     createEnemies();
@@ -403,12 +407,8 @@ function endTime() {
 
 function endGame() {
         console.log("Game Over! Score: " + score);
-        // Add the new entry to the history array
         gameHistory.push({ score: score, timeLeft: timeLeft });
-
-        // Sort the history array by score in descending order
         gameHistory.sort((a, b) => b.score - a.score);
-    
         displayScoreTable();
         console.log("Game Over! Score: " + score);
         showScreen("scoreTable");
@@ -417,17 +417,15 @@ function endGame() {
 
 
 function displayScoreTable() {
-    console.log("Displaying score table...");
-    const container = document.getElementById("scoreTable");
-    container.innerHTML = "<h2>Your Score:</h2>";
-    let table = "<table border='1'><tr><th>Date</th><th>Score</th></tr>";
-    gameHistory.forEach(entry => {
+  console.log("Displaying score table...");
+  const tableDiv = document.getElementById("scoreBoard");
+  let table = "<table border='1'><tr><th>Time (seconds)</th><th>Score</th></tr>";
+  gameHistory.forEach(entry => {
       table += `<tr><td>${entry.timeLeft}</td><td>${entry.score}</td></tr>`;
-    });
-    table += "</table>";
-    container.innerHTML += table;
-    container.style.display = "block";
-  }
+  });
+  table += "</table>";
+  tableDiv.innerHTML = table;
+}
 
 
 function drawInformation() {
@@ -450,6 +448,11 @@ function closeAbout() {
 
 
 window.addEventListener("keydown", e => {
+  const keysToPrevent = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+  if (keysToPrevent.includes(e.key)) {
+    e.preventDefault();
+  }
+
   if (e.key === "Escape") closeAbout();
   keysPressed[e.key] = true;
 
@@ -464,6 +467,7 @@ window.addEventListener("keydown", e => {
     });
   }
 });
+
 
 
 
