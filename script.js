@@ -16,6 +16,7 @@ var gameHistory = [];
 var playerBullets = [];
 
 var gameDuration;
+var animationId;
 var enemies = [];
 var enemySpeed = 4;
 var enemyDirection = 1; // 1 for right, -1 for left
@@ -278,8 +279,15 @@ function gameLoop() {
     endGame();
     return;
   }
-  //להוסיף סגירת משחק
-  requestAnimationFrame(gameLoop);
+  animationId = requestAnimationFrame(gameLoop);
+}
+
+
+function stopGame() {
+  if (typeof animationId !== "undefined") cancelAnimationFrame(animationId);
+  clearInterval(timerInterval);
+  backgroundMusic.pause();
+  backgroundMusic.currentTime = 0;
 }
 
 
