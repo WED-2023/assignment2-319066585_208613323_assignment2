@@ -14,11 +14,12 @@ var noFirstGame = false;
 var currUser = null;
 var gameHistory = [];
 var playerBullets = [];
-
+var speedBoostInterval = null;
+var enemySpeedLevel = 0;
 var gameDuration;
 var animationId;
 var enemies = [];
-var enemySpeed = 4;
+var enemySpeed;
 var enemyDirection = 1; // 1 for right, -1 for left
 var lastEnemyBullet = null;
 
@@ -186,6 +187,25 @@ function updateEnemies() {
 }
 
 
+function startEnemySpeedBoosts() {
+  enemySpeed = 4;
+  enemyShootSpeed = 5;
+  enemySpeedLevel = 0;
+  if (speedBoostInterval) clearInterval(speedBoostInterval);
+  speedBoostInterval = setInterval(() => {
+    if (enemySpeedLevel < 4) {
+      enemySpeed += 1;
+      enemyShootSpeed += 1;
+      enemySpeedLevel++;
+      console.log("Enemy speed increased to:", enemySpeed);
+    } else {
+      clearInterval(speedBoostInterval);
+    }
+  }, 5000);
+}
+
+
+
 function drawEnemies() {
   enemies.forEach(enemy => {
     if (enemy.alive) {
@@ -196,30 +216,31 @@ function drawEnemies() {
 
 
 function startGame() {
-    shootKey = document.getElementById("shootKey").value.trim() ||' ';
-    gameDuration = parseInt(document.getElementById("gameTime").value) * 60;
-    if (gameDuration < 120) {
-      alert("Minimum duration is 2 minutes.");
-      return;
-    }
-    score = 0;
-    timeElapsed = 0;
-    timeLeft = gameDuration;
-    player.x = canvas.width / 2;
-    player.y = canvas.height - 100;
-    playerBullets = [];
-    enemyBullets = [];
-    lastEnemyShotTime = 0;
-    lastEnemyBullet = null;
-    lives = 3;
-
-    
-    showScreen("game");
-    createEnemies();
-    backgroundMusic.currentTime = 0;
-    backgroundMusic.play();
-    startTimer();
-    gameLoop();
+  keysPressed = {};
+  shootKey = document.getElementById("shootKey").value.trim() ||' ';
+  gameDuration = parseInt(document.getElementById("gameTime").value) * 60;
+  if (gameDuration < 120) {
+    alert("Minimum duration is 2 minutes.");
+    return;
+  }
+  score = 0;
+  timeElapsed = 0;
+  timeLeft = gameDuration;
+  player.x = canvas.width / 2;
+  player.y = canvas.height - 100;
+  playerBullets = [];
+  enemyBullets = [];
+  lastEnemyShotTime = 0;
+  lastEnemyBullet = null;
+  lives = 3;
+  enemySpeed = 3; 
+  showScreen("game");
+  createEnemies();
+  startEnemySpeedBoosts();
+  backgroundMusic.currentTime = 0;
+  backgroundMusic.play();
+  startTimer();
+  gameLoop();
 }
   
 
@@ -289,6 +310,8 @@ function stopGame() {
   backgroundMusic.pause();
   enemies.length = 0;
   backgroundMusic.currentTime = 0;
+  clearInterval(speedBoostInterval);
+  enemySpeedLevel = 0;
 }
 
 
@@ -381,7 +404,7 @@ function updateEnemyBullets() {
   enemyBullets = enemyBullets.filter(bullet => bullet.y < canvas.height);
 
   enemyBullets.forEach(bullet => {
-    bullet.y += 10;
+    bullet.y += enemyShootSpeed;
     if (bullet.x < player.x + player.width && bullet.x + bullet.width > player.x && bullet.y < player.y + player.height && bullet.y + bullet.height > player.y) {
       lives--;
       explosionSound.currentTime = 0;
@@ -403,22 +426,26 @@ function drawEnemyBullets() {
 
 
 function endTime() {
-    let message;
-    if (score < 100) {
-      message = "You can do better. Score: " + score;
-    } else {
-      message = "Winner! Score: " + score;
-    }
+  var message;
+  if (score < 100) {
+    message = "You can do better. Score: " + score;
+  } else {
+    message = "Winner! Score: " + score;
+  }
+  clearInterval(speedBoostInterval);
+  enemySpeedLevel = 0;
 }
 
 
 function endGame() {
-        console.log("Game Over! Score: " + score);
-        gameHistory.push({ score: score, timeLeft: timeLeft });
-        gameHistory.sort((a, b) => b.score - a.score);
-        displayScoreTable();
-        console.log("Game Over! Score: " + score);
-        showScreen("scoreTable");
+  console.log("Game Over! Score: " + score);
+  gameHistory.push({ score: score, timeLeft: timeLeft });
+  gameHistory.sort((a, b) => b.score - a.score);
+  displayScoreTable();
+  console.log("Game Over! Score: " + score);
+  showScreen("scoreTable");
+  clearInterval(speedBoostInterval);
+  enemySpeedLevel = 0;
 }
 
 
