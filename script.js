@@ -287,6 +287,7 @@ function stopGame() {
   if (typeof animationId !== "undefined") cancelAnimationFrame(animationId);
   clearInterval(timerInterval);
   backgroundMusic.pause();
+  enemies.length = 0;
   backgroundMusic.currentTime = 0;
 }
 

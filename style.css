@@ -111,8 +111,8 @@ form select {
   padding: 10px;
   border-radius: 10px;
   border: 2px solid #00ffe0;
-  background-color: rgba(0, 0, 0, 0.6);
-  color: #00ffe0;
+  background-color: rgb(255, 255, 255);
+  color: #000000;
   font-family: 'Orbitron', sans-serif;
   font-size: 14px;
   transition: all 0.3s ease;
